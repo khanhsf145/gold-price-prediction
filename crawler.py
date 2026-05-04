@@ -774,8 +774,8 @@ from pathlib import Path
 from typing import Optional, Dict, List, Any
 
 # Đảm bảo file log luôn tồn tại
-with open("crawler.log", "w", encoding="utf-8") as f:
-    f.write(f"Crawl started at {datetime.utcnow().isoformat()}\n")
+# with open("crawler.log", "w", encoding="utf-8") as f:
+#     f.write(f"Crawl started at {datetime.utcnow().isoformat()}\n")
 
 # Cấu hình logging
 logging.basicConfig(
@@ -1020,11 +1020,20 @@ def update_dataset(csv_path: str = "data/gold_dataset_v2.csv") -> Dict[str, Any]
     logger.info(f"✅ Đã lưu {len(combined)} dòng vào {path}")
     return {"status": "success", "new_row": new_row, **result}
 
-if __name__ == "__main__":
-    res = update_dataset()
-    print("\n=== KẾT QUẢ CRAWL ===")
-    for k, v in res.items():
-        if k not in ("errors", "warnings"):
-            print(f"  {k:20s}: {v}")
-    if res.get("errors"):
-        print(f"\n⚠️ LỖI: {res['errors']}")
+
+try:
+    if __name__ == "__main__":
+        res = update_dataset()
+        print("\n=== KẾT QUẢ CRAWL ===")
+        for k, v in res.items():
+            if k not in ("errors", "warnings"):
+                print(f"  {k:20s}: {v}")
+        if res.get("errors"):
+            print(f"\n⚠️ LỖI: {res['errors']}")
+except Exception as e:
+    with open("crawler.log", "w") as f:
+        f.write(f"Error: {e}\n")
+    raise
+finally:
+    # Ensure crawler.log exists
+    open("crawler.log", "a").close()
