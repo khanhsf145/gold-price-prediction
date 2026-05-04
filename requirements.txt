@@ -1,0 +1,33 @@
+# ── Core data science ──────────────────────────────────
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.5.1
+scipy==1.13.1
+
+# ── Forecasting models ─────────────────────────────────
+lightgbm==4.4.0
+statsmodels==0.14.2
+prophet==1.1.5
+
+# ── Hyperparameter optimization ────────────────────────
+optuna==3.6.1
+
+# ── Explainability ─────────────────────────────────────
+shap==0.45.1
+
+# ── Data crawling ──────────────────────────────────────
+yfinance==0.2.40
+requests==2.31.0
+beautifulsoup4==4.12.3
+lxml==5.2.2
+
+# ── Visualization ──────────────────────────────────────
+matplotlib==3.9.1
+seaborn==0.13.2
+plotly==5.22.0
+
+# ── Web app ────────────────────────────────────────────
+streamlit==1.36.0
+
+# ── Persistence ────────────────────────────────────────
+joblib==1.4.2

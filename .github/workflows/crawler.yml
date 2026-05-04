@@ -1,0 +1,78 @@
+name: 🔄 Daily Gold Data Crawler
+
+on:
+  schedule:
+    # Chạy lúc 17:00 UTC mỗi ngày (00:00 ICT)
+    - cron: "0 17 * * *"
+  workflow_dispatch:   # Cho phép kích hoạt thủ công
+
+jobs:
+  crawl:
+    name: Thu thập dữ liệu giá vàng SJC
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # ── 1. Checkout code ──────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 2. Cài đặt Python ─────────────────────────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      # ── 3. Cài đặt dependencies ───────────────────────────────────
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install \
+            yfinance==0.2.40 \
+            pandas==2.2.2 \
+            requests==2.31.0 \
+            beautifulsoup4==4.12.3 \
+            lxml==5.2.2
+
+      # ── 4. Chạy crawler ───────────────────────────────────────────
+      - name: Run crawler
+        id: crawler
+        run: |
+          python crawler.py
+        continue-on-error: false
+        env:
+          PYTHONUNBUFFERED: "1"
+
+      # ── 5. Upload log nếu thất bại ────────────────────────────────
+      - name: Upload crawler log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crawler-log-${{ github.run_number }}
+          path: crawler.log
+          retention-days: 7
+
+      # ── 6. Commit & push dữ liệu mới ─────────────────────────────
+      - name: Commit updated dataset
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name  "github-actions[bot]"
+          git add data/gold_dataset_v2.csv crawler.log
+          # Chỉ commit nếu có thay đổi thực sự
+          git diff --cached --quiet || git commit -m "🤖 auto: cập nhật dữ liệu $(date -u '+%Y-%m-%d %H:%M UTC')"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+
+      # ── 7. Thông báo thành công ───────────────────────────────────
+      - name: Success summary
+        if: success()
+        run: |
+          echo "✅ Crawler hoàn thành lúc $(date -u '+%Y-%m-%d %H:%M UTC')"
+          tail -20 crawler.log
