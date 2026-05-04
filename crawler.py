@@ -773,6 +773,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional, Dict, List, Any
 
+# Đảm bảo file log luôn tồn tại
+with open("crawler.log", "w", encoding="utf-8") as f:
+    f.write(f"Crawl started at {datetime.utcnow().isoformat()}\n")
+
 # Cấu hình logging
 logging.basicConfig(
     level=logging.INFO,
