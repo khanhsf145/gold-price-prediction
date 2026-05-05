@@ -1,4 +1,4 @@
-# 🥇 Dự Báo Giá Vàng SJC — Luận văn Tốt nghiệp
+# 🥇 Dự Báo Giá Vàng SJC
 
 > **Anti-leakage Multi-horizon Time Series Forecasting Pipeline**  
 > Dự báo giá vàng SJC (1 ngày / 3 ngày / 7 ngày) sử dụng Residual Learning + LightGBM + Optuna
@@ -108,12 +108,3 @@ e_hat_ML(t)    = ML.predict(X_{t-1})  ← Học phần dư
 | LightGBM + Optuna (Residual) | H=1,3,7 | GBDT tối ưu, **khuyến nghị** |
 
 ---
-
-## ⚙️ GitHub Actions — Cập nhật tự động
-
-File `.github/workflows/crawler.yml` chạy `crawler.py` lúc **17:00 UTC** (00:00 ICT) mỗi ngày.
-Dữ liệu mới sẽ được commit tự động vào repository.
-
----
-
-*Luận văn Tốt nghiệp · Khoa Công nghệ Thông tin · 2024*
